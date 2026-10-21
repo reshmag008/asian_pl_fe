@@ -197,10 +197,10 @@ const [paymentPreview, setPaymentPreview] = useState("");
     }
 
     
-    if (!formData.jersey_sleeve) {
-      toast.error('Jersey Sleeve is required');
-      return;
-    }
+    // if (!formData.jersey_sleeve) {
+    //   toast.error('Jersey Sleeve is required');
+    //   return;
+    // }
 
    
 
@@ -221,6 +221,7 @@ const [paymentPreview, setPaymentPreview] = useState("");
     setIsLoading(true);
     formData.profile_image = formData.fullname + "_" + formData.contact_no + ".jpeg";
     formData.status = playerStatus.pending;
+    formData.jersey_sleeve = 'H';
     console.log("formData== ",formData)
     PlayerService().addPlayer(formData).then((response:any)=>{
         console.log("response== ", response);
@@ -381,7 +382,7 @@ const [paymentPreview, setPaymentPreview] = useState("");
               id="location"
               value={formData.location}
               onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))}
-              placeholder="Enter location"
+              placeholder="Enter your current team"
               className={inputClasses}
             />
           </div>
@@ -610,7 +611,7 @@ const [paymentPreview, setPaymentPreview] = useState("");
           </div>
 
 
-<div className="space-y-2">
+{/* <div className="space-y-2">
   <Label>Jersey Sleeve</Label>
 
   <RadioGroup
@@ -633,7 +634,7 @@ const [paymentPreview, setPaymentPreview] = useState("");
       <Label htmlFor="sleeve-full">F (Full Sleeve)</Label>
     </div>
   </RadioGroup>
-</div>
+</div> */}
 
 
 
