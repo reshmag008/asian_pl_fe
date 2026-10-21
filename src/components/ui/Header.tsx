@@ -3,41 +3,30 @@ import { Link, useLocation,useNavigate } from 'react-router-dom';
 import { Trophy, Users, UserPlus, Menu, X , Home,Group,LogIn,LogOut,Radio} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import bklogo from '../../assets/bk_logo.jpeg'
+import { useAuth } from "../../context/AuthContext"; // adjust the path
+
 
 const Header = () => {
   const location = useLocation();
       const navigate = useNavigate();
-  
+  const { isLoggedIn } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false)
 
   const navItems = [
-    // isLogin
-    // ? { path: "/login", label: "Logout", icon: LogOut }
-    // : { path: "/login", label: "Login", icon: LogIn },
+    isLoggedIn
+    ? { path: "/login", label: "Logout", icon: LogOut }
+    : { path: "/login", label: "Login", icon: LogIn },
     { path: '/', label: 'Home', icon: Home },
     { path: '/players', label: 'Players', icon: Users },
-    // { path: '/register', label: 'Register', icon: UserPlus },
+    { path: '/register', label: 'Register', icon: UserPlus },
     { path: '/teams', label: 'Teams', icon: Group },
-    { path: '/auction-live', label: 'Live', icon: Radio },
+    // { path: '/auction-live', label: 'Live', icon: Radio },
   ];
 
-
-      useEffect(() => {
-    const handleUserChanged = () => {
-      console.log("isLoggedIn==== ",localStorage.getItem("isLoggedIn"));
-     setIsLogin(localStorage.getItem("isLoggedIn") === "true");
-    };
-  
-    handleUserChanged();
-  
-    window.addEventListener("storage", handleUserChanged);
-  
-    return () => {
-      window.removeEventListener("storage", handleUserChanged);
-    };
-  }, []);
-
+  useEffect(()=>{
+    console.log("inside header useeffect== ", isLoggedIn)
+  },[isLoggedIn])
 
 
   return (
@@ -66,7 +55,7 @@ const Header = () => {
       BK's Cricket Auction
     </h1>
 
-   <Link
+   {/* <Link
       to="/auction-live"
       className="
         flex items-center gap-1
@@ -86,7 +75,7 @@ const Header = () => {
     >
       <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
       LIVE
-    </Link>
+    </Link> */}
 
   </div>
 

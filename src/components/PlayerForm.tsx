@@ -1,9 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, User, Phone, MapPin, Shield, Crosshair, Target, Save, X, Crop } from 'lucide-react';
+import { Camera, User, Phone, MapPin, Shield, Crosshair, Target, Save, X, Crop ,MessageCircle,Download,Upload,Copy} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -12,10 +16,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { usePlayer } from '@/context/PlayerContext';
-import { Player, playerRoles, battingStyles, bowlingStyles } from '@/types/player';
+import { Player, playerRoles, battingStyles, bowlingStyles, sizeList } from '@/types/player';
 import { toast } from 'sonner';
 import ImageCropper from './ImageCropper';
 import PlayerService from '@/service/PlayerService';
+import {playerStatus} from "../constants";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 interface PlayerFormProps {
   editPlayer?: Player;
@@ -24,6 +31,13 @@ interface PlayerFormProps {
 
 const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
   const navigate = useNavigate();
+
+  const paymentInputRef = useRef<HTMLInputElement>(null);
+
+const [paymentImage, setPaymentImage] = useState<File | null>(null);
+const [paymentPreview, setPaymentPreview] = useState("");
+
+
   const { addPlayer, updatePlayer } = usePlayer();
   const fileInputRef = useRef<HTMLInputElement>(null);
    const [isLoading, setIsLoading] = useState(false)
@@ -36,6 +50,14 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
     batting_style: '',
     bowling_style: '',
     profile_image: '',
+    jersey_name : "",
+    jersey_no:'',
+    jersey_size : '',
+    whatsapp_no : '',
+    status: 1,
+    bid_amount : 0,
+    payment_screenshot : '',
+    jersey_sleeve:''
   });
 
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -53,6 +75,14 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
         batting_style: editPlayer.batting_style,
         bowling_style: editPlayer.bowling_style,
         profile_image: editPlayer.profile_image,
+        jersey_name: editPlayer.jersey_name,
+        jersey_no: editPlayer.jersey_no,
+        jersey_size: editPlayer.jersey_size,
+        jersey_sleeve:editPlayer.jersey_sleeve,
+        whatsapp_no: editPlayer.whatsapp_no,
+        status : editPlayer.status,
+        bid_amount : editPlayer.bid_amount,
+        payment_screenshot : editPlayer.payment_screenshot
       });
       setImagePreview(`https://storage.googleapis.com/rajas_pl/${editPlayer.profile_image}`);
     }
@@ -135,8 +165,13 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
       return;
     }
 
+     if (!formData.whatsapp_no.trim()) {
+      toast.error('Whatsapp Number is required');
+      return;
+    }
+
     if (!formData.location) {
-      toast.error('Location is required');
+      toast.error('Current Team is required');
       return;
     }
  
@@ -155,6 +190,20 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
       return;
     }
 
+   
+    if (!formData.jersey_size) {
+      toast.error('Jersey Size is required');
+      return;
+    }
+
+    
+    if (!formData.jersey_sleeve) {
+      toast.error('Jersey Sleeve is required');
+      return;
+    }
+
+   
+
     
     
 
@@ -171,6 +220,8 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
   const savePlayer =()=>{
     setIsLoading(true);
     formData.profile_image = formData.fullname + "_" + formData.contact_no + ".jpeg";
+    formData.status = playerStatus.pending;
+    console.log("formData== ",formData)
     PlayerService().addPlayer(formData).then((response:any)=>{
         console.log("response== ", response);
         if(response.data){
@@ -178,6 +229,7 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
            addPlayer(formData);
              navigate('/players');
           playerImageUpload(response.data.id);
+          playerpaymentScreenshotUpload(response.data.id)
         }else{
           toast.error('Registration Failed')
         }
@@ -209,10 +261,38 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
   toast.error('Image upload failed. Please contact your admin')
   setIsLoading(false);
 }
-
-
-   
   }
+
+    const playerpaymentScreenshotUpload = async (playerId:any) => {
+    try{
+    const formFileData = new FormData()
+    if(paymentImage){
+      formFileData.append('file_name', 'Pay_ScrShot_'+formData.fullname + "_" + formData.contact_no + ".jpeg",)
+      formFileData.append('screenshot', 'Pay_ScrShot_'+formData.fullname + "_" + formData.contact_no + ".jpeg",)
+      formFileData.append('player_id', playerId)
+      formFileData.append('file', paymentImage)
+    await PlayerService().PlayerImageGoogleStorageCloudUpload(formFileData);
+    setIsLoading(false);
+  };
+}catch(err){
+  console.log("Error while screenshot upload")
+  toast.error('Payment Screenshot upload failed. Please contact your admin')
+  setIsLoading(false);
+}
+  }
+
+
+
+  const handlePaymentUpload = (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  setPaymentImage(file);
+  setPaymentPreview(URL.createObjectURL(file));
+};
+
 
 
 
@@ -291,26 +371,11 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
             />
           </div>
 
-          {/* Contact */}
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="contact" className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
-              <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-              Contact Number *
-            </Label>
-            <Input
-              id="contact"
-              value={formData.contact_no}
-              onChange={(e) => setFormData((prev) => ({ ...prev, contact_no: e.target.value }))}
-              placeholder="Enter contact number"
-              className={inputClasses}
-            />
-          </div>
-
           {/* Location */}
           <div className="space-y-1.5 sm:space-y-2">
             <Label htmlFor="location" className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
               <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-              Location
+              Current Team
             </Label>
             <Input
               id="location"
@@ -320,6 +385,107 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
               className={inputClasses}
             />
           </div>
+
+  {/* Contact Number */}
+  <div className="space-y-1.5 sm:space-y-2">
+    <Label
+      htmlFor="contact"
+      className="flex items-center gap-2 text-xs sm:text-sm font-semibold"
+    >
+      <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+      Contact Number *
+    </Label>
+
+    
+     <PhoneInput
+      country="om"
+      enableSearch={true}
+      searchPlaceholder="Search country..."
+      value={formData.contact_no}
+      onChange={(phone) =>
+        setFormData((prev) => ({
+          ...prev,
+          contact_no: phone,
+        }))
+      }
+      inputProps={{
+        id: "contact_no",
+        name: "contact_no",
+        required: true,
+      }}
+      containerClass="!w-full"
+      inputClass="
+        !w-full
+        !h-10
+        sm:!h-11
+        !rounded-md
+        !border
+        !border-input
+        !bg-background
+        !text-sm
+      "
+      buttonClass="
+        !h-10
+        sm:!h-11
+        !rounded-l-md
+        !border-input
+        !bg-background
+      "
+      dropdownClass="!z-50"
+    />
+
+
+  </div>
+
+  {/* WhatsApp Number */}
+  <div className="space-y-1.5 sm:space-y-2">
+    <Label
+      htmlFor="whatsapp_no"
+      className="flex items-center gap-2 text-xs sm:text-sm font-semibold"
+    >
+      <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+      WhatsApp Number *
+    </Label>
+
+    <PhoneInput
+      country="om"
+      enableSearch={true}
+      searchPlaceholder="Search country..."
+      value={formData.whatsapp_no}
+      onChange={(phone) =>
+        setFormData((prev) => ({
+          ...prev,
+          whatsapp_no: phone,
+        }))
+      }
+      inputProps={{
+        id: "whatsapp_no",
+        name: "whatsapp_no",
+        required: true,
+      }}
+      containerClass="!w-full"
+      inputClass="
+        !w-full
+        !h-10
+        sm:!h-11
+        !rounded-md
+        !border
+        !border-input
+        !bg-background
+        !text-sm
+      "
+      buttonClass="
+        !h-10
+        sm:!h-11
+        !rounded-l-md
+        !border-input
+        !bg-background
+      "
+      dropdownClass="!z-50"
+    />
+  </div>
+
+          
 
           {/* Player Role */}
           <div className="space-y-1.5 sm:space-y-2">
@@ -389,7 +555,174 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
               </SelectContent>
             </Select>
           </div>
+
+          {/* Jersey Name */}
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="contact" className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
+              <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              Jersey Name
+            </Label>
+            <Input
+              id="jersey_name"
+              value={formData.jersey_name}
+              onChange={(e) => setFormData((prev) => ({ ...prev, jersey_name: e.target.value }))}
+              placeholder="Enter Jersey Name"
+              className={inputClasses}
+            />
+          </div>
+
+          {/* Jersey No */}
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label htmlFor="contact" className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
+              <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              Jersey Number
+            </Label>
+            <Input
+              id="jersey_no"
+              value={formData.jersey_no}
+              onChange={(e) => setFormData((prev) => ({ ...prev, jersey_no: e.target.value }))}
+              placeholder="Enter Jersey No"
+              className={inputClasses}
+            />
+          </div>
+
+          {/* Jersey Size */}
+          <div className="space-y-1.5 sm:space-y-2">
+            <Label className="flex items-center gap-2 text-xs sm:text-sm font-semibold">
+              <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
+              Jersey Size*
+            </Label>
+            <Select
+              value={formData.jersey_size}
+              onValueChange={(value) => setFormData((prev) => ({ ...prev, jersey_size: value }))}
+            >
+              <SelectTrigger className={inputClasses}>
+                <SelectValue placeholder="Select Jersey Size" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-2 border-border z-50">
+                {sizeList.map((style) => (
+                  <SelectItem key={style} value={style} className="cursor-pointer hover:bg-muted">
+                    {style}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+
+<div className="space-y-2">
+  <Label>Jersey Sleeve</Label>
+
+  <RadioGroup
+    value={formData.jersey_sleeve}
+    onValueChange={(value) =>
+      setFormData((prev) => ({
+        ...prev,
+        jersey_sleeve: value,
+      }))
+    }
+    className="flex gap-6"
+  >
+    <div className="flex items-center gap-2">
+      <RadioGroupItem value="H" id="sleeve-half" />
+      <Label htmlFor="sleeve-half">H (Half Sleeve)</Label>
+    </div>
+
+    <div className="flex items-center gap-2">
+      <RadioGroupItem value="F" id="sleeve-full" />
+      <Label htmlFor="sleeve-full">F (Full Sleeve)</Label>
+    </div>
+  </RadioGroup>
+</div>
+
+
+
+
+
         </div>
+
+       <div className="flex flex-col items-center justify-center gap-4 p-5 rounded-xl border border-border bg-card shadow-sm">
+  <h3 className="text-lg font-semibold">
+    Payment Information
+  </h3>
+
+  <div className="flex flex-col items-center gap-2 rounded-lg bg-muted p-5 w-full">
+    <span className="text-sm text-muted-foreground">
+      Payment Number
+    </span>
+
+    <div className="flex items-center gap-3">
+      <span className="text-2xl font-bold tracking-wider">
+        9302 0909 (Saneej)
+      </span>
+
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        onClick={() => navigator.clipboard.writeText("93020909")}
+        aria-label="Copy payment number"
+      >
+        <Copy className="w-4 h-4" />
+      </Button>
+    </div>
+  </div>
+
+  <p className="text-xs text-center text-muted-foreground">
+    Use this payment number to complete your registration payment.
+  </p>
+</div>
+
+
+
+<div className="flex flex-col gap-4 p-5 rounded-xl border border-border bg-card shadow-sm">
+  <h3 className="text-lg font-semibold text-center">
+    Contact Information
+  </h3>
+
+  <div className="flex flex-col gap-3">
+    {[
+      { name: "Saneej", phone: "9302 0909" },
+      { name: "Najeem", phone: "9045 6786" },
+      { name: "Irshad", phone: "9641 5605" },
+    ].map((contact) => (
+      <div
+        key={contact.name}
+        className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/50 p-3"
+      >
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+            {contact.name.charAt(0)}
+          </div>
+
+          <div className="min-w-0">
+            <p className="font-semibold">{contact.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {contact.phone}
+            </p>
+          </div>
+        </div>
+
+        <a
+          href={`tel:${contact.phone.replace(/\s/g, "")}`}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground hover:opacity-80"
+          aria-label={`Call ${contact.name}`}
+        >
+          <Phone className="h-4 w-4" />
+        </a>
+      </div>
+    ))}
+  </div>
+
+  <p className="text-xs text-center text-muted-foreground">
+    Contact any of the above persons for registration or payment assistance.
+  </p>
+</div>
+
+
+
+  
+
 
         {/* Submit Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-3 sm:pt-4">
@@ -418,7 +751,15 @@ const PlayerForm = ({ editPlayer, onCancel }: PlayerFormProps) => {
             </Button>
           )}
         </div>
+
+        
+
+{/* </div> */}
+
+
       </form>
+
+
     </>
   );
 };

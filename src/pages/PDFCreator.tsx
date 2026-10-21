@@ -157,7 +157,7 @@ const PDFCreator: React.FC<props> = ({playerList,teamName}) => {
     }
 
     // Save the PDF
-    pdf.save(teamName ? teamName+'.pdf' : "All Kerala Monsoon CL Players.pdf");
+    pdf.save(teamName ? teamName+'.pdf' : "Asian Premier League Players.pdf");
     setIsLoading(false)
 };
 

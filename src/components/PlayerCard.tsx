@@ -1,6 +1,15 @@
 import { useState } from 'react';
-import { User, MapPin, Crosshair, Target, Pencil, Trash2 } from 'lucide-react';
-import { Player } from '@/types/player';
+import {
+  User,
+  Trophy,
+  Crosshair,
+  Target,
+  MapPin,
+  Phone,
+  Shield,
+  CheckCircle,
+  LoaderCircle,
+} from "lucide-react";import { Player } from '@/types/player';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -21,6 +30,8 @@ import {
 import PlayerForm from './PlayerForm';
 import { usePlayer } from '@/context/PlayerContext';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
+import PlayerService from '@/service/PlayerService';
 
 interface PlayerCardProps {
   player: Player;
@@ -28,14 +39,42 @@ interface PlayerCardProps {
 
 const PlayerCard = ({ player }: PlayerCardProps) => {
   const { deletePlayer } = usePlayer();
+    const { isLoggedIn } = useAuth();
+    const { players, setPlayers } = usePlayer();
+  
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [approvingPlayerId, setApprovingPlayerId] = useState<number | null>(null);
+  
 
   const handleDelete = () => {
     deletePlayer(player.id);
     toast.success('Player deleted successfully!');
     setShowDeleteDialog(false);
   };
+
+   const handleApprove = (playerId : any)=>{
+        setApprovingPlayerId(playerId);
+        PlayerService().approvePlayer(playerId).then((response:any)=>{
+          console.log("response=== ", response)
+          setApprovingPlayerId(null);
+  
+          let updatedPlayer = response.data;
+  
+          setPlayers((prev) =>
+            prev.map((player) =>
+              player.id === updatedPlayer.id
+                ? { ...player, ...updatedPlayer }
+                : player
+            )
+          );
+  
+          toast.success('Player approved successfully!');
+  
+        })
+        
+      }
+
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
@@ -55,79 +94,177 @@ const PlayerCard = ({ player }: PlayerCardProps) => {
 
   return (
     <>
-      <div className="bg-card rounded-xl shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden group animate-scale-in border border-border">
-        {/* Player Image */}
-        <div className="relative h-36 sm:h-48 bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
-          {player.profile_image ? (
-            <img
-              src={`https://storage.googleapis.com/rajas_pl/${player.profile_image}`}
-              alt={player.fullname}
-              // className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              className="group relative hover:shadow-2xl transition-all duration-300"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <User className="w-16 h-16 sm:w-20 sm:h-20 text-muted-foreground/30" />
-            </div>
-          )}
-          {/* Role Badge */}
-          <div className={`absolute top-2 right-2 sm:top-3 sm:right-3 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold ${getRoleBadgeColor(player.player_role)}`}>
-            {player.player_role}
-          </div>
+      
+
+
+
+
+<div className="group relative overflow-hidden rounded-2xl border-2 border-yellow-400 bg-white p-1 shadow-lg shadow-blue-950/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+
+  <div className="overflow-hidden rounded-xl border border-blue-200">
+
+    {/* Player Image */}
+   <div className="relative h-100 overflow-hidden bg-[#06152f] sm:h-100">
+
+      {player.profile_image ? (
+        <img
+          src={`https://storage.googleapis.com/rajas_pl/${player.profile_image}`}
+          alt={player.fullname}
+          loading="lazy"
+          className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex h-full items-center justify-center bg-gradient-to-br from-blue-950 to-sky-800">
+          <User className="h-20 w-20 text-white/40" />
         </div>
+      )}
 
-        {/* Player Info */}
-        <div className="p-3 sm:p-5">
-          <h3 className="font-heading font-bold text-base sm:text-lg text-foreground mb-2 sm:mb-3 truncate">
-            {player.fullname}
-          </h3>
+      {/* Image Gradient */}
+      {/* <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#04132f] via-[#04132f]/10 to-black/10" /> */}
 
-          <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-            {player.location && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-                <span className="truncate">{player.location}</span>
-              </div>
-            )}
+      {/* Player ID */}
+      <div className="absolute left-3 top-3 rounded-lg border border-yellow-400 bg-[#06152f]/90 px-3 py-1.5 shadow-lg">
+        
+        <p className="text-lg font-black leading-tight text-white">
+          #{player.id}
+        </p>
+      </div>
+     
+      {/* Role, Batting & Bowling Overlay */}
+      <div className="absolute inset-x-0 bottom-0 p-2.5">
 
-            {player.batting_style && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Crosshair className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-secondary flex-shrink-0" />
-                <span className="truncate">{player.batting_style}</span>
-              </div>
-            )}
+        <div className="grid grid-cols-3 gap-1 rounded-xl border border-yellow-400/70 bg-[#06152f]/95 p-2.5 shadow-xl backdrop-blur-sm">
 
-            {player.bowling_style && player.bowling_style !== 'None' && (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-pitch-light flex-shrink-0" />
-                <span className="truncate">{player.bowling_style}</span>
-              </div>
-            )}
+          {/* Role */}
+          <div className="min-w-0 border-r border-white/20 pr-1.5">
+            <div className="mb-1 flex items-center gap-1 text-yellow-400">
+              <Trophy className="h-3.5 w-3.5 shrink-0" />
+              <span className="text-[9px] font-bold uppercase">
+                Role
+              </span>
+            </div>
+            <p className="break-words text-xs font-extrabold leading-snug text-white">
+              {player.player_role || "Player"}
+            </p>
           </div>
 
-          {/* Action Buttons */}
-          {/* <div className="flex gap-2 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowEditDialog(true)}
-              className="flex-1 h-8 sm:h-9 text-xs sm:text-sm border-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
-            >
-              <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-              Edit
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowDeleteDialog(true)}
-              className="flex-1 h-8 sm:h-9 text-xs sm:text-sm border-2 border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all"
-            >
-              <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-              Delete
-            </Button>
-          </div> */}
+          {/* Batting Style */}
+          <div className="min-w-0 border-r border-white/20 px-1">
+            <div className="mb-1 flex items-center gap-1 text-yellow-400">
+              <Crosshair className="h-3.5 w-3.5 shrink-0" />
+              <span className="text-[9px] font-bold uppercase">
+                Batting
+              </span>
+            </div>
+            <p className="break-words text-xs font-extrabold leading-snug text-white">
+              {player.batting_style || "N/A"}
+            </p>
+          </div>
+
+          {/* Bowling Style */}
+          <div className="min-w-0 pl-1">
+            <div className="mb-1 flex items-center gap-1 text-yellow-400">
+              <Target className="h-3.5 w-3.5 shrink-0" />
+              <span className="text-[9px] font-bold uppercase">
+                Bowling
+              </span>
+            </div>
+            <p className="break-words text-xs font-extrabold leading-snug text-white">
+              {player.bowling_style &&
+              player.bowling_style !== "None"
+                ? player.bowling_style
+                : "N/A"}
+            </p>
+          </div>
+
         </div>
       </div>
+    </div>
+
+    {/* Player Name & Team */}
+    <div className="bg-white p-3 sm:p-4">
+
+      <h3 className="break-words text-lg font-black uppercase leading-tight tracking-tight text-blue-950 sm:text-xl">
+        {player.fullname}
+      </h3>
+
+      <div className="mt-2 flex min-w-0 items-center gap-2">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-950 text-yellow-400">
+          <Shield className="h-4 w-4" />
+        </div>
+
+        <div className="min-w-0">
+          <p className="text-[9px] font-bold uppercase tracking-widest text-slate-500">
+            Current Team
+          </p>
+          <p className="break-words text-sm font-extrabold text-blue-900">
+            {player.location || "Not Assigned"}
+          </p>
+        </div>
+      </div>
+
+      {/* Contact + Approve Button */}
+      <div className="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2.5">
+
+        {/* Contact Number */}
+        <a
+          href={
+            player.contact_no
+              ? `tel:${player.contact_no}`
+              : undefined
+          }
+          className="flex min-w-0 flex-1 items-center gap-2"
+        >
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-700">
+            <Phone className="h-4 w-4" />
+          </div>
+
+          <div className="min-w-0">
+            <p className="text-[9px] font-bold uppercase tracking-wide text-slate-500">
+              Contact Number
+            </p>
+            <p className="break-all text-xs font-extrabold text-blue-950 sm:text-sm">
+              {player.contact_no || "N/A"}
+            </p>
+          </div>
+        </a>
+
+        {/* Approve Button - Admin Only */}
+        {isLoggedIn && player.status == 1 && (
+          <div className="shrink-0">
+            {approvingPlayerId === player.id ? (
+              <button
+                type="button"
+                disabled
+                className="flex items-center gap-1.5 rounded-lg bg-green-600 px-3 py-2.5 text-xs font-bold text-white opacity-80"
+              >
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+                <span className="hidden sm:inline">Approving</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => handleApprove(player.id)}
+                className="flex items-center gap-1.5 rounded-lg bg-green-600 px-3 py-2.5 text-xs font-black text-white shadow-md transition hover:bg-green-500 active:scale-95"
+              >
+                <CheckCircle className="h-4 w-4" />
+                <span>Approve</span>
+              </button>
+            )}
+          </div>
+        )}
+
+      </div>
+
+     
+    </div>
+  </div>
+</div>
+
+
+
+
+
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

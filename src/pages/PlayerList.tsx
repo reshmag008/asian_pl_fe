@@ -136,22 +136,22 @@ const PlayerList = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
             <div className="text-center sm:text-left">
               <h1 className="font-heading font-extrabold text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2">
-              LA & A10 All Kerala Monsoon Premier League S3 - Player Roster
+               Asian Premier League S3 - Player Roster
               </h1>
               <p className="text-primary-foreground/80 text-sm sm:text-lg">
                 {players ? players.length : 0} {players &&players.length === 1 ? 'player' : 'players'} registered for auction
               </p>
             </div>
-             {/* <Link to="/register" className="w-3/4 sm:w-auto">
+             <Link to="/register" className="w-3/4 sm:w-auto">
               <Button className="w-full sm:w-auto h-10 sm:h-12 px-4 sm:px-6 text-sm sm:text-base font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-gold">
                 <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Register New Player
               </Button>
-            </Link>  */}
+            </Link> 
           </div>
 
           
-          <div className="flex flex-col sm:flex-row items-center sm:gap-6">
+          {/* <div className="flex flex-col sm:flex-row items-center sm:gap-6">
 
             {allTeams && allTeams.length>0 && (
                 <select
@@ -195,7 +195,7 @@ const PlayerList = () => {
 
                   <PDFCreator playerList={players} teamName={selectedTeamName}/>
 
-      </div>
+      </div> */}
 
 
         </div>
@@ -229,127 +229,130 @@ const PlayerList = () => {
             <p className="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6 max-w-md px-4">
               Start building your dream team by registering your first player for the auction.
             </p>
-             {/* <Link to="/register">
+             <Link to="/register">
               <Button className="h-10 sm:h-12 px-6 sm:px-8 text-sm sm:text-base font-semibold gradient-pitch hover:opacity-90">
                 <Trophy className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Register First Player
               </Button>
-            </Link>  */}
+            </Link> 
           </div>
         ) : (
-          // <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-          //   {players && players.map((player) => (
-          //     <PlayerCard key={player.id} player={player} />
-          //   ))}
-          // </div>
+          <div className="min-h-screen bg-black p-3 sm:p-6">
+  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+    {players &&
+      players.map((player) => (
+        <PlayerCard key={player.id} player={player} />
+      ))}
+  </div>
+</div>
 
 
-      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+//       <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
 
         
 
-  {players && players.map((player) => (
-    <div key={player.id} className="relative group">
+//   {players && players.map((player) => (
+//     <div key={player.id} className="relative group">
       
-      <img
-        src={playerCardImg}
-        alt={'img'}
-        className="w-full h-full object-cover"
-      />
+//       <img
+//         src={playerCardImg}
+//         alt={'img'}
+//         className="w-full h-full object-cover"
+//       />
 
 
-      <div className="absolute top-[37%] left-[6%] text-right text-white font-bold text-lg">
-        <img
-          src={`https://storage.googleapis.com/rajas_pl/${player.profile_image}`}
-          alt="img"
-          className="w-[35%] aspect-[1/1.45] object-cover rounded-[4%]"
-        />
-      </div>
+//       <div className="absolute top-[37%] left-[6%] text-right text-white font-bold text-lg">
+//         <img
+//           src={`https://storage.googleapis.com/rajas_pl/${player.profile_image}`}
+//           alt="img"
+//           className="w-[35%] aspect-[1/1.45] object-cover rounded-[4%]"
+//         />
+//       </div>
 
-      {!player.bid_amount && (
-  <div
-    className="
-      absolute top-[20%] right-[4%] z-20
-      flex items-center gap-3
-      rounded-full
-      border border-emerald-400/60
-      bg-slate-950/90
-      px-3 py-1.5
-      shadow-[0_0_15px_rgba(52,211,153,0.3)]
-      backdrop-blur-sm
-    "
-  >
-    {/* SOLD */}
-    <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9px] font-black uppercase text-slate-950">
-      SOLD
-    </span>
+//       {!player.bid_amount && (
+//   <div
+//     className="
+//       absolute top-[20%] right-[4%] z-20
+//       flex items-center gap-3
+//       rounded-full
+//       border border-emerald-400/60
+//       bg-slate-950/90
+//       px-3 py-1.5
+//       shadow-[0_0_15px_rgba(52,211,153,0.3)]
+//       backdrop-blur-sm
+//     "
+//   >
+//     {/* SOLD */}
+//     <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9px] font-black uppercase text-slate-950">
+//       SOLD
+//     </span>
 
-    {/* Team */}
-    <span className="text-xs font-bold text-white">
-      Team Name
-    </span>
+//     {/* Team */}
+//     <span className="text-xs font-bold text-white">
+//       Team Name
+//     </span>
 
-    {/* Bid */}
-    <span className="text-sm font-black text-yellow-400">
-      ₹1,000
-    </span>
-  </div>
-)}
+//     {/* Bid */}
+//     <span className="text-sm font-black text-yellow-400">
+//       ₹1,000
+//     </span>
+//   </div>
+// )}
 
 
-      <div className="absolute top-[4%] left-[6%] w-[13%] text-left text-green font-bold text-[35px]">
-        {player.id}
-      </div>
+//       <div className="absolute top-[4%] left-[6%] w-[13%] text-left text-green font-bold text-[35px]">
+//         {player.id}
+//       </div>
 
-      <div className="absolute bottom-[20.5%] left-[52%] text-left text-black font-bold text-[90%]">
-        {player.player_role}
-      </div>
+//       <div className="absolute bottom-[20.5%] left-[52%] text-left text-black font-bold text-[90%]">
+//         {player.player_role}
+//       </div>
 
-      <div className="absolute bottom-[17.5%] left-[52%] text-left text-black font-bold text-[90%]">
-        {player.batting_style}
-      </div>
+//       <div className="absolute bottom-[17.5%] left-[52%] text-left text-black font-bold text-[90%]">
+//         {player.batting_style}
+//       </div>
 
-      <div className="absolute bottom-[14%] left-[52%] text-left text-black font-bold text-[90%]">
-        {player.bowling_style}
-      </div>
+//       <div className="absolute bottom-[14%] left-[52%] text-left text-black font-bold text-[90%]">
+//         {player.bowling_style}
+//       </div>
 
-      <div className="absolute bottom-[11%] left-[52%] text-left text-black font-bold text-[90%]">
-        {capitalizeFirst(player?.location)}
-      </div>
+//       <div className="absolute bottom-[11%] left-[52%] text-left text-black font-bold text-[90%]">
+//         {capitalizeFirst(player?.location)}
+//       </div>
 
-      <div className="absolute bottom-[8%] left-[52%] text-left text-black font-bold text-[90%] ">
-        {player.contact_no}
-      </div>
+//       <div className="absolute bottom-[8%] left-[52%] text-left text-black font-bold text-[90%] ">
+//         {player.contact_no}
+//       </div>
 
-      <div
-        className="absolute bottom-[4.2%] left-[7%] w-[50%] text-left font-bold text-[80%] text-white">
-        {player.fullname.toUpperCase()}
-      </div>
+//       <div
+//         className="absolute bottom-[4.2%] left-[7%] w-[50%] text-left font-bold text-[80%] text-white">
+//         {player.fullname.toUpperCase()}
+//       </div>
 
       
-     {/* {isLogin && (
-     <div className="absolute top-3 left-[15%] right-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 px-4">
-    <button
-      onClick={() => handleEdit(player)}
-      className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
-    >
-      <Edit className="w-4 h-4" />
-    </button>
+//      {/* {isLogin && (
+//      <div className="absolute top-3 left-[15%] right-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 px-4">
+//     <button
+//       onClick={() => handleEdit(player)}
+//       className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors"
+//     >
+//       <Edit className="w-4 h-4" />
+//     </button>
 
-    <button
-      onClick={() => handleDelete(player.id)}
-      className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 transition-colors"
-    >
-      <Trash2 className="w-4 h-4" />
-    </button>
-  </div>
-  )} */}
+//     <button
+//       onClick={() => handleDelete(player.id)}
+//       className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700 transition-colors"
+//     >
+//       <Trash2 className="w-4 h-4" />
+//     </button>
+//   </div>
+//   )} */}
 
 
 
-    </div>
-  ))}
-</div>
+//     </div>
+//   ))}
+// </div>
 
         )}
       </section>

@@ -248,7 +248,7 @@ useEffect(() => {
             </p>
 
             <h2 className="mt-1 text-2xl lg:text-3xl xl:text-4xl font-black text-white tracking-wide">
-              LA &amp; A10 All Kerala Monsoon Premier League - Season 3 
+              LA &amp; A10 Asian Premier League - Season 3 
             </h2>
 
           </div>

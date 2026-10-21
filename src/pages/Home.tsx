@@ -14,7 +14,7 @@ const HomePage = () => {
           className="w-full h-auto object-cover"
         />
 
-        <div className="p-4">
+        {/* <div className="p-4">
         <button
           onClick={() => navigate("/auction-live")}
           className="
@@ -33,7 +33,7 @@ const HomePage = () => {
           <span className="h-3 w-3 rounded-full bg-white animate-pulse" />
           LIVE AUCTION
         </button>
-      </div>
+      </div> */}
 
 
       </div>

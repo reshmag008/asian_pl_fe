@@ -2,10 +2,13 @@ import LoginService from "@/service/LoginService";
 import { FormEvent, useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { leagueOwnerId } from "../constants";
+import { useAuth } from "../context/AuthContext";
+
 
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login , logout} = useAuth();
   const [erroMessage, setErrorMessage] = useState('')
   const [isLoading , setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -14,7 +17,7 @@ const Login = () => {
     });
 
   useEffect(()=>{
-          localStorage.setItem("isLoggedIn", "false");
+          logout();
       },[])
 
 
@@ -41,7 +44,7 @@ const Login = () => {
             .then((response: any) => {
               console.log("response=== ", response.data)
               if(response.data.success){
-                localStorage.setItem("isLoggedIn", "true");
+                login();
                 navigate("/");
               }else{
                 setErrorMessage("Invalid Username or Password");
