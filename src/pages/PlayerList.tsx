@@ -237,7 +237,7 @@ const PlayerList = () => {
             </Link> 
           </div>
         ) : (
-          <div className="min-h-screen bg-black p-3 sm:p-6">
+          <div className="min-h-screen p-3 sm:p-6">
   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 xl:grid-cols-4">
     {players &&
       players.map((player) => (
