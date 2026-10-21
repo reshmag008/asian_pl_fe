@@ -34,14 +34,13 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-14 sm:h-16">
           <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
-            <div className="p-1.5 sm:p-2 ">
-              {/* <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-secondary-foreground" /> */}
-              <img
-          src={bklogo}   // replace with your image path or URL
-          alt="Poster"
-          className="w-5 h-5 sm:w-6 sm:h-6 text-secondary-foreground object-cover"
-        />
-            </div>
+            <div className="pl-0.5 pr-1.5 py-1 sm:pl-1 sm:pr-2">
+  <img
+    src={bklogo}
+    alt="BK Logo"
+    className="h-15 w-10 sm:h-10 sm:w-8 object-contain"
+  />
+</div>
 
 
 

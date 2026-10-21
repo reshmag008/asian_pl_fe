@@ -21,7 +21,7 @@ console.log(player);
       <section className="gradient-hero text-primary-foreground py-6 sm:py-10">
         <div className="container mx-auto px-4">
           <Link
-            to="/"
+            to="/players"
             className="inline-flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground transition-colors mb-3 sm:mb-4 text-sm sm:text-base"
           >
             <ArrowLeft className="w-4 h-4" />
