@@ -157,7 +157,7 @@ const PDFCreator: React.FC<props> = ({playerList,teamName}) => {
     }
 
     // Save the PDF
-    pdf.save(teamName ? teamName+'.pdf' : "Asian Premier League Players.pdf");
+    pdf.save(teamName ? teamName+'.pdf' : "ASIAN PREMIER LEAGUE SEASON 2 Players.pdf");
     setIsLoading(false)
 };
 
