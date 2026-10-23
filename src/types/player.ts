@@ -38,7 +38,9 @@ export const bowlingStyles = [
 ] as const;
 
 export const sizeList = [
-  "XXXL (46)",
+  "5XL (50)",
+  "4XL (48)",
+  "3XL (46)",
   "XXL (44)",
   "XL (42)",
   "L (40)",
