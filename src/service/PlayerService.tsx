@@ -14,6 +14,11 @@ export const PlayerService = () => ({
         
     },
 
+     approvePlayer : (playerId:any) =>{
+        let params = {id : playerId}
+        return(axios.post(BACKEND_URL + "/approve_player",  params))
+    },
+
     displayTeamScores: ()=>{
         return(axios.post(BACKEND_URL + "/display_team_scores"))
     },
