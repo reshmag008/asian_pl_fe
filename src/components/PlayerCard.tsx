@@ -59,7 +59,7 @@ const PlayerCard = ({ player }: PlayerCardProps) => {
           console.log("response=== ", response)
           setApprovingPlayerId(null);
   
-          let updatedPlayer = response.data;
+          let updatedPlayer = response.data.players;
   
           setPlayers((prev) =>
             prev.map((player) =>
