@@ -142,12 +142,12 @@ const PlayerList = () => {
                 {players ? players.length : 0} {players &&players.length === 1 ? 'player' : 'players'} registered for auction
               </p>
             </div>
-             <Link to="/register" className="w-3/4 sm:w-auto">
+             {/* <Link to="/register" className="w-3/4 sm:w-auto">
               <Button className="w-full sm:w-auto h-10 sm:h-12 px-4 sm:px-6 text-sm sm:text-base font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-gold">
                 <UserPlus className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Register New Player
               </Button>
-            </Link> 
+            </Link>  */}
           </div>
 
           
@@ -229,12 +229,12 @@ const PlayerList = () => {
             <p className="text-muted-foreground text-sm sm:text-base mb-4 sm:mb-6 max-w-md px-4">
               Start building your dream team by registering your first player for the auction.
             </p>
-             <Link to="/register">
+             {/* <Link to="/register">
               <Button className="h-10 sm:h-12 px-6 sm:px-8 text-sm sm:text-base font-semibold gradient-pitch hover:opacity-90">
                 <Trophy className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 Register First Player
               </Button>
-            </Link> 
+            </Link>  */}
           </div>
         ) : (
           <div className="min-h-screen p-3 sm:p-6">

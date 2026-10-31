@@ -39,7 +39,7 @@ const HomePage = () => {
       Players
     </button>
 
-    <button
+    {/* <button
       type="button"
       onClick={() => navigate("/register")}
       className="
@@ -56,7 +56,7 @@ const HomePage = () => {
     >
       <UserPlus className="h-5 w-5" />
       Register
-    </button>
+    </button> */}
 
   </div>
 
