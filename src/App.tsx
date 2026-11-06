@@ -22,7 +22,7 @@ import Login from "./pages/Login";
 import LiveAuctionPlayerCard from "./pages/Auction";
 import AuctionPlayerPage from "./pages/AuctionControlCenter";
 import PlayerDisplay from "./pages/PlayerDisplay";
-// import PlayerAuctionView from "./pages/LiveAuction";
+import PlayerAuctionView from "./pages/LiveAuction";
 
 const queryClient = new QueryClient();
 
@@ -48,7 +48,7 @@ const AppContent = () => {
         <Route path="/teams" element={<TeamList />} />
         {/* <Route path="/auction-live" element={<PlayerAuctionView />} /> */}
         <Route path="*" element={<NotFound />} />
-        {/* <Route path="/auction-live" element={<PlayerAuctionView />} /> */}
+        <Route path="/auction-live" element={<PlayerAuctionView />} />
       </Routes>
     </div>
   );

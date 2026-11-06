@@ -14,7 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 const AuctionPlayerPage: React.FC = () => {
 
-  const baseAmount = 1000;
+  const baseAmount = 50;
   const [allTeams, setAllTeams] = useState<any>([]);
   const [bidFlow, setBidFlow] = useState<any>([]);
   const [bidAmount, setBidAmount] = useState<number>(0);
@@ -79,20 +79,20 @@ const AuctionPlayerPage: React.FC = () => {
       .then((response: any) => {
         let players = response?.data;
         setSearchText('')
-        if (players.length === 0) {
+        if (!players) {
           toast.success("No pending players");
           localStorage.setItem("selectedPlayer", JSON.stringify({}));
           localStorage.setItem("team_complete",  JSON.stringify({}))
           localStorage.setItem("currentBidTeam", JSON.stringify({}));
           localStorage.setItem('close_popup', 'false');
         }
-        if (players.length === 1) {
-          setCurrentBidPlayer(players[0]);
-          localStorage.setItem("selectedPlayer", JSON.stringify(players[0]));
+        if (players) {
+          setCurrentBidPlayer(players);
+          localStorage.setItem("selectedPlayer", JSON.stringify(players));
           localStorage.setItem("currentBidTeam", JSON.stringify({}));
           localStorage.setItem("team_complete",  JSON.stringify({}))
           localStorage.setItem('close_popup', 'false');
-          PlayerService().displayPlayer(players[0]).then((response: any) => {
+          PlayerService().displayPlayer(players).then((response: any) => {
       console.log("response== ", response);
     })
           setIsLoading(false);
@@ -172,10 +172,10 @@ const AuctionPlayerPage: React.FC = () => {
         let amount;
         let lastBidAmount = bidFlow[bidFlow.length - 1].amount;
         console.log("lastBidAmount=== ", lastBidAmount);
-        if(lastBidAmount >= 10000){
-        amount = bidAmount + 1000
+        if(lastBidAmount >= 100){
+        amount = bidAmount + 20
         }else{
-          amount = bidAmount + 1000
+          amount = bidAmount + 10
         }
 
         if (amount > team.max_bid_amount) {
@@ -327,24 +327,84 @@ const AuctionPlayerPage: React.FC = () => {
 )}
 
         {currentBidPlayer && currentBidPlayer.id && (
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <img
-            src={`https://storage.googleapis.com/rajas_pl/${currentBidPlayer.profile_image}`}
-            alt={currentBidPlayer.fullname}
-            className="w-40 h-40 md:w-52 md:h-52 rounded-xl object-cover border-4 border-blue-500"
-          />
+        <div className="overflow-hidden rounded-xl border border-green-200 bg-white shadow-md">
 
-          <div className="text-center md:text-left">
-            <h2 className="text-4xl font-bold text-green-600">
-              {currentBidPlayer.id}.{currentBidPlayer.fullname}
-            </h2>
-          </div>
-          <div className="text-center md:text-left">
-            <h2 className="text-2xl font-bold text-green-600">
-              Role : {currentBidPlayer.player_role}
-            </h2>
-          </div>
+  {/* Header */}
+  <div className="bg-gradient-to-r from-green-900 to-green-600 px-4 py-2">
+    <h2 className="text-center text-lg font-extrabold text-white">
+      PLAYER PROFILE
+    </h2>
+  </div>
+
+  {/* Player Details */}
+  <div className="flex flex-col items-center gap-4 p-4 sm:flex-row sm:items-start">
+
+    {/* Player Image */}
+    <img
+      src={`https://storage.googleapis.com/rajas_pl/${currentBidPlayer.profile_image}`}
+      alt={currentBidPlayer.fullname}
+      className="h-35 w-28 shrink-0 rounded-xl border-2 border-green-600 object-cover sm:h-38 sm:w-32"
+    />
+
+    {/* Player Information */}
+    <div className="w-full flex-1">
+
+      {/* Name */}
+      <div className="mb-3 text-center sm:text-left">
+        <p className="text-xs font-bold text-green-700">
+          #{currentBidPlayer.id}
+        </p>
+
+        <h2 className="text-xl font-extrabold text-gray-900">
+          {currentBidPlayer.fullname}
+        </h2>
+      </div>
+
+      {/* Role & Contact */}
+      <div className="mb-2 grid grid-cols-2 gap-2">
+
+        <div className="rounded-lg bg-green-100 px-3 py-2">
+          <p className="text-xs font-medium text-green-700">Role</p>
+          <p className="text-sm font-bold text-green-950">
+            {currentBidPlayer.player_role}
+          </p>
         </div>
+
+        <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2">
+          <p className="text-xs text-green-700">Contact Number</p>
+          <p className="text-sm font-bold text-green-950">
+            {currentBidPlayer.contact_no || "-"}
+          </p>
+        </div>
+
+      </div>
+
+      {/* Batting & Bowling */}
+      <div className="grid grid-cols-2 gap-2">
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
+          <p className="text-xs text-gray-500">Batting Style</p>
+          <p className="text-sm font-semibold text-gray-900">
+            {currentBidPlayer.batting_style || "-"}
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
+          <p className="text-xs text-gray-500">Bowling Style</p>
+          <p className="text-sm font-semibold text-gray-900">
+            {currentBidPlayer.bowling_style || "-"}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  {/* Bottom Accent */}
+  <div className="h-1 bg-gradient-to-r from-green-900 via-lime-500 to-green-700" />
+
+</div>
         )}
 
         {/* Search and Action Buttons */}
