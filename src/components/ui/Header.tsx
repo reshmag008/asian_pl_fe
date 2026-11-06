@@ -54,7 +54,7 @@ const Header = () => {
       BK's Cricket Auction
     </h1>
 
-   {/* <Link
+   <Link
       to="/auction-live"
       className="
         flex items-center gap-1
@@ -74,7 +74,7 @@ const Header = () => {
     >
       <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
       LIVE
-    </Link> */}
+    </Link>
 
   </div>
 
